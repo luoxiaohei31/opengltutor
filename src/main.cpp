@@ -7,8 +7,8 @@
 #include <clocale>
 #endif
 
-#define ON
-#ifndef ON
+#define OFF
+#ifdef ON
 
 int main() {
 #ifdef _WIN32
@@ -156,17 +156,35 @@ int main() {
 }
 #endif  // ON
 
-#ifndef OFF
+#ifdef OFF
+#include"myHomeWork.hpp"
 
 static void render() {
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex3f(0.0f, 0.5f, 0.0f);
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(-0.5f, -0.5f, 0.0f);
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(0.5f, -0.5f, 0.0f);
-    CHECK_GL(glEnd());
+    HollowCircle hc1{};
+    hc1.setColr(120.0f, 255.0f, 189.0f);
+    hc1.x = 0.0f;
+    hc1.y = 0.7f * sinf(3.1415f / 3.0f);
+    hc1.inner_raduis = 0.15f;
+    hc1.top_raduis = 0.3f;
+    hc1.start_angle = -(1.0f / 6.0f);
+    hc1.end_angle = (1.0f / 2.0f + 1.0f / 6.0f);
+    hc1.paint();
+    
+    HollowCircle hc2 = hc1;
+    hc2.setColr(255.0f, 193.0f, 120.0f);
+    hc2.x = -0.35f;
+    hc2.y = 0.0f;
+    hc2.start_angle = 1.0f / 6.0f;
+    hc2.end_angle = 1.0f;
+    hc2.paint();
+
+    HollowCircle hc3 = hc1;
+    hc3.setColr(255.0f, 120.0f, 177.0f);
+    hc3.x = 0.35f;
+    hc3.y = 0.0f;
+    hc3.start_angle = (1.0f / 4.0f + 1.0f / 12.0f);
+    hc3.end_angle = 1.0f + 1.0f / 6.0f;
+    hc3.paint();
 
 }
 
@@ -219,6 +237,10 @@ int main() {
     }
     glfwMakeContextCurrent(window);
 
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+    glfwSetWindowPos(window, 1920/2-width/2, 1080/2-height/2);
+
     // Load glXXX function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         glfwTerminate();
@@ -228,9 +250,11 @@ int main() {
     std::cerr << "OpenGL Version: " << glGetString(GL_VERSION) << '\n';
 
     CHECK_GL(glEnable(GL_POINT_SMOOTH));
+    /*****************开启抗锯齿********************/
     CHECK_GL(glEnable(GL_BLEND));
     CHECK_GL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-    CHECK_GL(glPointSize(64.0f));
+    /*********************************************/
+    //CHECK_GL(glPointSize(64.0f));
 
     // start main game loop
     while (!glfwWindowShouldClose(window)) {
